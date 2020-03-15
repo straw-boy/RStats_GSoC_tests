@@ -2,8 +2,6 @@ library("Rcpp")
 sourceCpp("fastProxSl1.cpp")
 
 library("SLOPE")
-library("microbenchmark")
-
 
 run_experiment <- function(sequence_length,iterations){
     time_fpsl1 = 0
@@ -26,35 +24,7 @@ run_experiment <- function(sequence_length,iterations){
     print(time_psl1)
 }
 
-l <- c(100,1000,10000,100000,1000000,10000000)
+l <- c(100,1000,10000,100000,1000000)
 for (val in l){
     run_experiment(val,100)
 }
-
-
-# print("y = 1000")
-# y = c(runif(1000,min=-100000,max=100000))
-# y = sort(y,decreasing=TRUE)
-# lambda = create_lambda(1,1000)
-# microbenchmark(FastProxSL1(y,lambda),prox_sorted_L1(y,lambda))
-
-# print("y = 10000")
-# y = c(runif(10000,min=-100000,max=100000))
-# y = sort(y,decreasing=TRUE)
-# lambda = create_lambda(1,10000)
-# microbenchmark(FastProxSL1(y,lambda),prox_sorted_L1(y,lambda))
-
-# print("y = 100000")
-# y = c(runif(100000,min=-100000,max=100000))
-# y = sort(y,decreasing=TRUE)
-# lambda = create_lambda(1,100000)
-# # print("Size of y = ",val)
-# microbenchmark(FastProxSL1(y,lambda),prox_sorted_L1(y,lambda))
-
-# print("y = 1000000")
-# y = c(runif(1000000,min=-100000,max=100000))
-# y = sort(y,decreasing=TRUE)
-# lambda = create_lambda(1,1000000)
-# microbenchmark(FastProxSL1(y,lambda),prox_sorted_L1(y,lambda))
-
-# proc.time() - ptm
