@@ -7,7 +7,7 @@ run_experiment <- function(sequence_length,iterations){
     time_fpsl1 = 0
     time_psl1 = 0
     for (i in 1:iterations){
-        y = c(runif(sequence_length,min=-100000,max=100000))
+        y = c(runif(sequence_length,min=0,max=100000))
         y = sort(y,decreasing=TRUE)
         lambda = create_lambda(1,sequence_length)
         t <- proc.time()
