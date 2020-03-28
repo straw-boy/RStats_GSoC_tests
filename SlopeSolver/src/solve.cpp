@@ -10,36 +10,27 @@ arma::vec solveSlope(arma::mat x, arma::vec y, arma::vec lambda) {
 
     arma::uword p = x.n_cols;
 
-    arma::uword passes = 0, max_passes=15;
+    arma::uword max_passes=1000000;
 
-    // Initial b_0
-    arma::vec beta = zeros<vec>(p);
-    arma::vec beta_prev = beta;
+ 
+    arma::vec beta(p);
+    beta.fill(10.0);
+    arma::vec z = beta, w = beta;
 
-    double lr = 0.5;
+    mat I(p,p);
+    I.eye();
 
-    // Pseudo Code referred from http://www.seas.ucla.edu/~vandenbe/236C/lectures/fista.pdf
-    while (passes < max_passes){
-        arma::uword k = passes+1;
+    double rho = 1.5;
 
-        arma::vec temp = beta + (beta-beta_prev)*(k-2)/(k+1);
+    arma::mat temp = x.t()*x + rho*I, temp2 = x.t()*y;
+    temp = inv(temp);
 
-        temp = temp - lr*x.t()*(x*temp-y);
-        beta_prev = beta;
-
-        vec temp_sign = sign(temp);
-        temp = abs(temp);
-        uvec temp_order = sort_index(temp,"descend");
-        temp = (temp(temp_order)).eval();
-
-        temp = FastProxSL1(temp,lambda);
-
-        temp(temp_order) = temp;
-        temp %= temp_sign;
-
-        beta = temp;
-        // beta.print();
-        passes++;
+    for(int i=0;i<max_passes;i++){
+        beta = temp*(temp2+rho*(z-w));
+        z = FastProxSL1(beta+w,rho*lambda);
+        w = w + beta - z;
     }
+    
     return beta;
+
 }
