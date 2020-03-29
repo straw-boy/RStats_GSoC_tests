@@ -20,14 +20,25 @@ arma::vec solveSlope(arma::mat x, arma::vec y, arma::vec lambda) {
     mat I(p,p);
     I.eye();
 
-    double rho = 1.5;
+    double rho = 10;
 
     arma::mat temp = x.t()*x + rho*I, temp2 = x.t()*y;
     temp = inv(temp);
 
     for(int i=0;i<max_passes;i++){
         beta = temp*(temp2+rho*(z-w));
-        z = FastProxSL1(beta+w,rho*lambda);
+
+        z = beta+w;
+        vec z_sign = sign(z);
+        z = abs(z);
+        uvec z_order = sort_index(z,"descend");
+        z = (z(z_order)).eval();
+
+        z = FastProxSL1(z,rho*lambda);
+
+        z(z_order) = z;
+        z %= z_sign;
+
         w = w + beta - z;
     }
     

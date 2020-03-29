@@ -7,7 +7,7 @@ sourceCpp("/home/akarsh/owl/owl_imp.cpp")
 setwd("/home/akarsh/RStats_GSoC_tests/SlopeSolver")
 load_all()
 
-ld = 0.001*create_lambda(1,dim(bodyfat$x)[2])
+ld = 0.01*create_lambda(1,dim(bodyfat$x)[2])
 x = data.matrix(bodyfat$x)
 
 
