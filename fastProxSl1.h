@@ -11,29 +11,42 @@ arma::vec FastProxSL1(arma::vec y, arma::vec lambda) {
     
     */
     arma::vec x = y - lambda;
+    int n = x.n_elem;
     while(1){
 
-        // Computing left and right indices of an increasing subsequence
-        int left=0;
-        while(left+1 < x.n_elem && x(left)>=x(left+1)) left++;
-        int right=left;
-        while(right+1 < x.n_elem && x(right)<=x(right+1)) right++;
+      for(int left=n-2;left>=0;left--){
+        int right=left+1;
 
-        if(left==right) 
-            // (y-lambda) is non increasing 
-            return x;
+        while(right<n && x(right-1)<=x(right)) right++;
+        right--;
         
-        // Updating elements of y and lambda between left and right with the mean
+        if(left==right) continue;
+        // [left,right] is increasing. Replace with their average
         double new_y = 0;
         for(int i=left;i<=right;i++) new_y += y(i);
         new_y = new_y/(right-left+1);
         for(int i=left;i<=right;i++) y(i) = new_y;
-
+        
         double new_lambda = 0;
         for(int i=left;i<=right;i++) new_lambda += lambda(i);
         new_lambda = new_lambda/(right-left+1);
         for(int i=left;i<=right;i++) lambda(i) = new_lambda;
-
+        
         for(int i=left;i<=right;i++) x(i) = y(i) - lambda(i);
+      }
+      
+      int flag=0;
+
+      for(int i=0;i+1<n;i++){
+          if( x(i)<x(i+1)) flag=1;
+      }
+
+      if(flag==0){
+        for(int i=0;i<n;i++){
+          if(x(i)<0) x(i)=0;
+          
+        }
+        return x;
+      }
     }
 }
